@@ -1,33 +1,19 @@
-const chat = document.getElementById("chat");
+const videoId = "video-1";
 
-function add(text, cls) {
-  const d = document.createElement("div");
-  d.className = "msg " + cls;
-  d.textContent = text;
-  chat.appendChild(d);
-  chat.scrollTop = chat.scrollHeight;
-}
-
-async function send() {
-  const text = input.value.trim();
-  if (!text) return;
-
-  input.value = "";
-  add(text, "user");
-
-  const r = await fetch("/api/chat", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ message: text })
-  });
-
+async function loadPulse(){
+  const r = await fetch(API + "/pulse/" + videoId);
   const d = await r.json();
-  add(d.reply, "ai");
+  pulseCount.textContent = d.pulses;
 }
 
-function newChat() {
-  chat.innerHTML = "";
-  add("Willkommen bei StriveCore AI 👋", "ai");
+async function pulse(){
+  const r = await fetch(API + "/pulse",{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({ videoId })
+  });
+  const d = await r.json();
+  pulseCount.textContent = d.pulses;
 }
 
-newChat();
+loadPulse();
